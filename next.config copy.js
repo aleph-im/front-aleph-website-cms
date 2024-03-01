@@ -3,8 +3,8 @@ const withTwin = require('./withTwin.js')
 
 const isGithubActions = process.env.IS_GH_PAGES || false
 
-let assetPrefix = ''
-let basePath = process.env.NEXTJS_BASEPATH || ''
+let assetPrefix = undefined
+let basePath = process.env.NEXTJS_BASEPATH || undefined
 
 if (isGithubActions) {
   // trim off `<owner>/`

@@ -1,14 +1,26 @@
 import Head from "next/head";
-
-
 import {
-  useStoryblokState,
   getStoryblokApi,
-  StoryblokComponent,
+  useStoryblokState,
+  useStoryblok,
+  StoryblokComponent
 } from "@storyblok/react";
 
 export default function Home({ story }) {
-  story = useStoryblokState(story);
+  const staticStory = useStoryblokState(story);
+
+  let slug = typeof window === 'object' ?
+    (window.location.pathname === "/"
+      ? "home"
+      : window.location.pathname.replace("/", "")): '';
+
+  const dynamicStory = useStoryblok(slug, { version: "draft" });
+
+  const story2 = dynamicStory || staticStory
+
+  console.log('staticStory', staticStory)
+  console.log('dynamicStory', dynamicStory)
+  console.log('story2', story2)
 
   return (
     <div>
@@ -16,7 +28,7 @@ export default function Home({ story }) {
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <StoryblokComponent blok={story.content} />
+      <StoryblokComponent blok={story2.content} />
     </div>
   );
 }
