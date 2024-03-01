@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "VERSION=published next build",
+    "build:draft": "VERSION=draft next build",
     "start": "next start",
     "export": "next export",
     "lint": "next lint",
