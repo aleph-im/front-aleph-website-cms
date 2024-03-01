@@ -17,7 +17,7 @@ export default function Home({ story }) {
 
   const dynamicStory = useStoryblok(slug, { version: "draft" })
 
-  const story2 = dynamicStory || staticStory
+  const story2 = dynamicStory?.name ? dynamicStory : staticStory
 
   return (
     <div>
