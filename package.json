@@ -5,7 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "VERSION=draft next dev",
     "build": "VERSION=published next build",
     "build:draft": "VERSION=draft next build",
     "start": "next start",
