@@ -24,9 +24,19 @@ function loadBridge(callback) {
 function initBridge() {
   const { StoryblokBridge, location } = window
   const storyblokInstance = new StoryblokBridge()
+
+  storyblokInstance.on(['published', 'change'], () => {
+    // reload page if save or publish is clicked
+    location.reload(true)
+  })
+
+  storyblokInstance.on('input', (event) => {
+    // Access currently changed but not yet saved content via: 
+    console.log(event.story.content)
+  })
 }
 
-if(typeof window === 'object' && window.location.search.includes('_storyblok')) {
+if (typeof window === 'object' && window.location.search.includes('_storyblok')) {
   // load the bridge only inside of Storyblok
   loadBridge(initBridge)
 }
