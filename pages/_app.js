@@ -5,6 +5,32 @@ import Grid from "../components/Grid";
 import Page from "../components/Page";
 import Teaser from "../components/Teaser";
 
+
+function loadBridge(callback) {
+  const existingScript = document.getElementById("storyblokBridge");
+  if (!existingScript) {
+    const script = document.createElement("script");
+    script.src = "//app.storyblok.com/f/storyblok-v2-latest.js";
+    script.id = "storyblokBridge";
+    document.body.appendChild(script);
+    script.onload = () => {
+      callback();
+    };
+  } else {
+    callback();
+  }
+}
+
+function initBridge() {
+  const { StoryblokBridge, location } = window
+  const storyblokInstance = new StoryblokBridge()
+}
+
+if(window.location.search.includes('_storyblok')) {
+  // load the bridge only inside of Storyblok
+  loadBridge(initBridge)
+}
+
 const components = {
   feature: Feature,
   grid: Grid,
