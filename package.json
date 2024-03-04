@@ -1,6 +1,6 @@
 {
   "name": "front-aleph-website-cms",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Next.js Storyblok Ultimate Tutorial",
   "main": "index.js",
   "private": true,
