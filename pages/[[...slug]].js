@@ -7,7 +7,7 @@ import {
 } from "@storyblok/react"
 
 export default function SlugPage({ slug, version, preview, story }) {
-  const staticStory = useStoryblokState(story, undefined, false)
+  // const staticStory = useStoryblokState(story, undefined, false)
   const dynamicStory = useStoryblok(slug, { version }, preview)
 
   const renderStory = preview
