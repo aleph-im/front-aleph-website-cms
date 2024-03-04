@@ -1,40 +1,23 @@
-import Head from "next/head"
-import {
-  getStoryblokApi,
-  useStoryblokState,
-  useStoryblok,
-  StoryblokComponent
-} from "@storyblok/react"
+import { getStoryblokApi } from "@storyblok/react"
+import RenderDynamic from '../components/RenderDynamic'
+import RenderStatic from '../components/RenderStatic'
 
 export default function SlugPage({ slug, version, preview, story }) {
-  // const staticStory = useStoryblokState(story, undefined, false)
-  const dynamicStory = useStoryblok(slug, { version }, preview)
-
-  const renderStory = preview
-    ? dynamicStory
-    : dynamicStory?.name
-      ? dynamicStory
-      : staticStory
-
   return (
-    <div >
-      <Head>
-        <title>{renderStory?.name || "My Site"}</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      {renderStory?.name ? <StoryblokComponent blok={renderStory.content} /> : null}
-    </div>
-  );
+    preview
+      ? <RenderDynamic {...{ slug, version, preview }} />
+      : <RenderStatic {...{ story, slug, version }} />
+  )
 }
 
 export async function getStaticProps({ params }) {
-  let slug = params.slug && params.slug.length ? params.slug.join("/") : "home";
+  let slug = params.slug && params.slug.length ? params.slug.join("/") : "home"
 
-  const version = process.env.VERSION || preview ? "draft" : "published"
-  const preview = version === 'draft' ? {} : undefined
+  const version = process.env.NEXT_PUBLIC_VERSION
+  const preview = version === 'draft' ? {} : null
 
-  const storyblokApi = getStoryblokApi();
-  let { data } = await storyblokApi.get(`cdn/stories/${slug}`, { version });
+  const storyblokApi = getStoryblokApi()
+  let { data } = await storyblokApi.get(`cdn/stories/${slug}`, { version })
 
   return {
     props: {
@@ -45,35 +28,35 @@ export async function getStaticProps({ params }) {
       preview
     },
     revalidate: 3600,
-  };
+  }
 }
 
 export async function getStaticPaths() {
-  const version = process.env.VERSION
+  const version = process.env.NEXT_PUBLIC_VERSION
 
-  const storyblokApi = getStoryblokApi();
+  const storyblokApi = getStoryblokApi()
 
-  let { data } = await storyblokApi.get("cdn/links/", { version });
-  let paths = [];
+  let { data } = await storyblokApi.get("cdn/links/", { version })
+  let paths = []
 
   Object.keys(data.links).forEach((linkKey) => {
     if (data.links[linkKey].is_folder) {
-      return;
-    }
-
-    if (data.links[linkKey].slug === "home") {
-      paths.push({ params: { slug: [] } });
       return
     }
 
-    const slug = data.links[linkKey].slug;
-    let splittedSlug = slug.split("/");
+    if (data.links[linkKey].slug === "home") {
+      paths.push({ params: { slug: [] } })
+      return
+    }
 
-    paths.push({ params: { slug: splittedSlug } });
-  });
+    const slug = data.links[linkKey].slug
+    let splittedSlug = slug.split("/")
+
+    paths.push({ params: { slug: splittedSlug } })
+  })
 
   return {
     paths: paths,
     fallback: false,
-  };
+  }
 }

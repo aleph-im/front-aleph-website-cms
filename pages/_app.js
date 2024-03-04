@@ -12,13 +12,16 @@ const components = {
   page: Page,
 };
 
+console.log('bridge active', process.env.NEXT_PUBLIC_VERSION !== 'published')
+
 storyblokInit({
   accessToken: "Hm9iCy1Q3FTCnbXzzWR3XQtt",
   use: [apiPlugin],
   components,
   apiOptions: {
     region: ''
-  }
+  },
+  bridge: process.env.NEXT_PUBLIC_VERSION !== 'published'
 });
 
 function MyApp({ Component, pageProps }) {

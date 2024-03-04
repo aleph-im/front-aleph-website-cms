@@ -5,9 +5,9 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "dev": "VERSION=draft next dev",
-    "build": "VERSION=published next build",
-    "build:draft": "VERSION=draft next build",
+    "dev": "NEXT_PUBLIC_VERSION=draft next dev",
+    "build": "NEXT_PUBLIC_VERSION=published next build",
+    "build:draft": "NEXT_PUBLIC_VERSION=draft next build",
     "start": "next start",
     "export": "next export",
     "lint": "next lint",
