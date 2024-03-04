@@ -26,7 +26,7 @@ function initBridge() {
   const storyblokInstance = new StoryblokBridge()
 }
 
-if(window.location.search.includes('_storyblok')) {
+if(typeof window === 'object' && window.location.search.includes('_storyblok')) {
   // load the bridge only inside of Storyblok
   loadBridge(initBridge)
 }
