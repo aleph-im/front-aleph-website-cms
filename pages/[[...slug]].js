@@ -6,19 +6,23 @@ import {
   StoryblokComponent
 } from "@storyblok/react"
 
-export default function SlugPage({ slug, version, story }) {
-  const staticStory = useStoryblokState(story)
-  const dynamicStory = useStoryblok(slug, { version })
+export default function SlugPage({ slug, version, preview, story }) {
+  const staticStory = useStoryblokState(story, undefined, preview)
+  const dynamicStory = useStoryblok(slug, { version }, preview)
 
-  const story2 = dynamicStory?.name ? dynamicStory : staticStory
+  const renderStory = preview
+    ? dynamicStory
+    : dynamicStory?.name
+      ? dynamicStory
+      : staticStory
 
   return (
     <div >
       <Head>
-        <title>{story2 ? story2.name : "My Site"}</title>
+        <title>{renderStory?.name || "My Site"}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <StoryblokComponent blok={story2.content} />
+      {renderStory?.name ? <StoryblokComponent blok={renderStory.content} /> : null}
     </div>
   );
 }
@@ -26,9 +30,8 @@ export default function SlugPage({ slug, version, story }) {
 export async function getStaticProps({ params }) {
   let slug = params.slug && params.slug.length ? params.slug.join("/") : "home";
 
-  console.log('slug', slug)
-
-  const version = process.env.VERSION
+  const version = process.env.VERSION || preview ? "draft" : "published"
+  const preview = version === 'draft' ? {} : undefined
 
   const storyblokApi = getStoryblokApi();
   let { data } = await storyblokApi.get(`cdn/stories/${slug}`, { version });
@@ -38,19 +41,21 @@ export async function getStaticProps({ params }) {
       story: data ? data.story : false,
       key: data ? data.story.id : false,
       slug,
-      version
+      version,
+      preview
     },
     revalidate: 3600,
   };
 }
 
 export async function getStaticPaths() {
-  const storyblokApi = getStoryblokApi();
-  let { data } = await storyblokApi.get("cdn/links/", {
-    version: process.env.VERSION
-  });
+  const version = process.env.VERSION
 
+  const storyblokApi = getStoryblokApi();
+
+  let { data } = await storyblokApi.get("cdn/links/", { version });
   let paths = [];
+
   Object.keys(data.links).forEach((linkKey) => {
     if (data.links[linkKey].is_folder) {
       return;
